@@ -18,12 +18,13 @@ Solution refine(const Instance *ins, const Deadline *deadline,
   std::shuffle(order.begin(), order.end(), MT);
 
   const auto num_refine_agents =
-      std::max(1, std::min(get_random_int(MT, 1, 30), int(N / 4)));
+      std::max(1, std::min(get_random_int(MT, 1, 30), int(N / 4))); // 一组agents的个数
+//  std::cout << "num_refine_agents:\t" << num_refine_agents << std::endl;
   info(1, verbose, deadline, "refiner-", seed,
        "\tsize of modif set: ", num_refine_agents);
   for (auto k = 0; (k + 1) * num_refine_agents < N; ++k) {
     if (is_expired(deadline)) return Solution();
-
+    //std::cout << "group:\t" << k << std::endl;
     auto old_cost = 0;
     auto new_cost = 0;
 
@@ -33,7 +34,7 @@ Solution refine(const Instance *ins, const Deadline *deadline,
       old_cost += get_path_loss(paths[i]);
       CT.clearPath(i, paths[i]);
     }
-
+    //std::cout << "old_cost:\t" << old_cost << std::endl;
     // re-planning
     Paths new_paths(num_refine_agents);
     for (auto _i = 0; _i < num_refine_agents; ++_i) {
@@ -48,12 +49,14 @@ Solution refine(const Instance *ins, const Deadline *deadline,
 
     if (!new_paths[num_refine_agents - 1].empty() && new_cost <= old_cost) {
       // success
+//      std::cout << "refine success!" << std::endl;
       for (auto _i = 0; _i < num_refine_agents; ++_i) {
         const auto i = order[k * num_refine_agents + _i];
         paths[i] = new_paths[_i];
       }
     } else {
       // failure
+//      std::cout << "refine fail!" << std::endl;
       for (auto _i = 0; _i < num_refine_agents; ++_i) {
         const auto i = order[k * num_refine_agents + _i];
         if (!new_paths[_i].empty()) CT.clearPath(i, new_paths[_i]);

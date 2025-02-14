@@ -12,7 +12,7 @@ CollisionTable::~CollisionTable() {}
 
 int CollisionTable::getCollisionCost(const Vertex *v_from, const Vertex *v_to,
                                      const int t_from)
-{
+{  // body: vertex, time, agents
   const int t_to = t_from + 1;
   auto collision = 0;
   // vertex collision

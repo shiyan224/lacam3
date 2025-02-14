@@ -12,7 +12,7 @@ Scatter::Scatter(const Instance *_ins, DistTable *_D, const Deadline *_deadline,
       V_size(ins->G->size()),
       T(get_makespan_lower_bound(*ins, *_D) + _cost_margin),
       D(_D),
-      cost_margin(_cost_margin),
+      cost_margin(_cost_margin), // 10 by default
       sum_of_path_length(0),
       paths(N),
       scatter_data(N),
@@ -34,7 +34,7 @@ void Scatter::construct()
     auto f_a = std::get<1>(a) + std::get<2>(a);
     auto f_b = std::get<1>(b) + std::get<2>(b);
     if (f_a != f_b) return f_a > f_b;
-    return std::get<0>(a)->id < std::get<0>(b)->id;
+    return std::get<0>(a)->id < std::get<0>(b)->id; // break ties
   };
   auto CLOSED = std::vector<Vertex *>(V_size, nullptr);  // parent
 
@@ -44,21 +44,21 @@ void Scatter::construct()
 
   // main loop
   auto loop = 0;
-  while (loop < 2 || CT.collision_cnt < collision_cnt_last) {
+  while (loop < 2 || CT.collision_cnt < collision_cnt_last) { // 有改进，至少循环2次
     ++loop;
     collision_cnt_last = CT.collision_cnt;
 
     // randomize planning order
     auto order = std::vector<int>(N, 0);
     std::iota(order.begin(), order.end(), 0);
-    std::shuffle(order.begin(), order.end(), MT);
+    std::shuffle(order.begin(), order.end(), MT); // 以随机顺序规划agent路径
 
     // single-agent path finding for agent-i
     for (int _i = 0; _i < N; ++_i) {
       if (is_expired(deadline)) break;
 
       const auto i = order[_i];
-      const auto cost_ub = D->get(i, ins->starts[i]) + cost_margin;
+      const auto cost_ub = D->get(i, ins->starts[i]) + cost_margin; // 上界
 
       if (!paths[i].empty()) sum_of_path_length -= (paths[i].size() - 1);
 

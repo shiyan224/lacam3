@@ -76,7 +76,7 @@ void print_stats(const int verbose, const Deadline *deadline,
 // for log of map_name
 static const std::regex r_map_name = std::regex(R"(.+/(.+))");
 
-void make_log(const Instance &ins, const Solution &solution,
+void make_log(const Instance &ins, const Solution &solution, const Solution &new_solution,
               const std::string &output_name, const double comp_time_ms,
               const std::string &map_name, const int seed, const bool log_short)
 {
@@ -99,10 +99,13 @@ void make_log(const Instance &ins, const Solution &solution,
   log << "solver=planner\n";
   log << "solved=" << !solution.empty() << "\n";
   log << "soc=" << get_sum_of_costs(solution) << "\n";
+  log << "refined_soc=" << get_sum_of_costs(new_solution) << "\n";
   log << "soc_lb=" << get_sum_of_costs_lower_bound(ins, dist_table) << "\n";
   log << "makespan=" << get_makespan(solution) << "\n";
+  log << "refined_makespan=" << get_makespan(new_solution) << "\n";
   log << "makespan_lb=" << get_makespan_lower_bound(ins, dist_table) << "\n";
   log << "sum_of_loss=" << get_sum_of_loss(solution) << "\n";
+  log << "refined_sum_of_loss=" << get_sum_of_loss(new_solution) << "\n";
   log << "sum_of_loss_lb=" << get_sum_of_costs_lower_bound(ins, dist_table)
       << "\n";
   log << "comp_time=" << comp_time_ms << "\n";

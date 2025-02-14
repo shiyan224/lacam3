@@ -15,7 +15,7 @@ r = (x) -> round(x, digits = 3)
 function main(config_files...)
     # load experimental setting
     config = merge(map(YAML.load_file, config_files)...)
-    exec_file = get(config, "exec_file", joinpath(@__DIR__, "..", "build", "main"))
+    exec_file = get(config, "exec_file", joinpath(@__DIR__, "..", "cmake-build-debug", "main"))
     seed_start = get(config, "seed_start", 1)
     seed_end = get(config, "seed_end", seed_start)
     time_limit_sec = get(config, "time_limit_sec", 10)
@@ -122,10 +122,13 @@ function main(config_files...)
             :solved => 0,
             :comp_time => 0,
             :soc => 0,
+            :refined_soc => 0,
             :soc_lb => 0,
             :makespan => 0,
+            :refined_makespan => 0,
             :makespan_lb => 0,
             :sum_of_loss => 0,
+            :refined_sum_of_loss => 0,
             :sum_of_loss_lb => 0,
             :checkpoints => "",
             :comp_time_initial_solution => 0,
@@ -138,14 +141,20 @@ function main(config_files...)
             for line in readlines(output_file)
                 m = match(r"soc=(\d+)", line)
                 !isnothing(m) && (row[:soc] = parse(Int, m[1]))
+                m = match(r"refined_soc=(\d+)", line)
+                !isnothing(m) && (row[:refined_soc] = parse(Int, m[1]))
                 m = match(r"soc_lb=(\d+)", line)
                 !isnothing(m) && (row[:soc_lb] = parse(Int, m[1]))
                 m = match(r"makespan=(\d+)", line)
                 !isnothing(m) && (row[:makespan] = parse(Int, m[1]))
+                m = match(r"refined_makespan=(\d+)", line)
+                !isnothing(m) && (row[:refined_makespan] = parse(Int, m[1]))
                 m = match(r"makespan_lb=(\d+)", line)
                 !isnothing(m) && (row[:makespan_lb] = parse(Int, m[1]))
                 m = match(r"sum_of_loss=(\d+)", line)
                 !isnothing(m) && (row[:sum_of_loss] = parse(Int, m[1]))
+                m = match(r"refined_sum_of_loss=(\d+)", line)
+                !isnothing(m) && (row[:refined_sum_of_loss] = parse(Int, m[1]))
                 m = match(r"sum_of_loss_lb=(\d+)", line)
                 !isnothing(m) && (row[:sum_of_loss_lb] = parse(Int, m[1]))
                 m = match(r"comp_time=(\d+)", line)

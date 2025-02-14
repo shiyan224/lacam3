@@ -1,6 +1,7 @@
 #include <argparse/argparse.hpp>
 #include <iostream>
 #include <lacam.hpp>
+#include <refiner.hpp>
 
 int main(int argc, char *argv[])
 {
@@ -19,7 +20,7 @@ int main(int argc, char *argv[])
       .default_value(std::string("0"));
   program.add_argument("-t", "--time_limit_sec")
       .help("time limit sec")
-      .default_value(std::string("3"));
+      .default_value(std::string("100"));
   program.add_argument("-o", "--output")
       .help("output file")
       .default_value(std::string("./build/result.txt"));
@@ -147,7 +148,15 @@ int main(int argc, char *argv[])
   }
 
   // post processing
-  print_stats(verbose, &deadline, ins, solution, comp_time_ms);
-  make_log(ins, solution, output_name, comp_time_ms, map_name, seed, log_short);
+//  print_stats(verbose, &deadline, ins, solution, comp_time_ms);
+
+  DistTable *D = new DistTable(ins);
+  auto new_solution = refine(&ins, &deadline, solution, D, seed, verbose - 4);
+  if (is_feasible_solution(ins, new_solution, verbose)) {
+//    std::cout << "new solution is feasible" << std::endl;
+    std::cout << get_sum_of_loss(solution) << "->" << get_sum_of_loss(new_solution) << "\n";
+  }
+//  print_stats(verbose, &deadline, ins, new_solution, comp_time_ms);
+  make_log(ins, solution, new_solution, output_name, comp_time_ms, map_name, seed, log_short);
   return 0;
 }

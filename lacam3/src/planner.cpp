@@ -77,12 +77,12 @@ Solution Planner::solve()
 
     // check pooled procedures
     refiner_pool.remove_if([&](auto &proc) {
-      if ((proc).wait_for(TIME_ZERO) != std::future_status::ready) return false;
-      apply_new_solution(proc.get());
+      if ((proc).wait_for(TIME_ZERO) != std::future_status::ready) return false; // 该线程还没结束
+      apply_new_solution(proc.get()); // 表示线程已经结束，得到了一个solution
       ++seed_refiner;
       refiner_pool.emplace_back(std::async(std::launch::async,
                                            &Planner::get_refined_plan, this,
-                                           backtrack(H_goal)));
+                                           backtrack(H_goal))); // 做完一个就再加一个
       return true;
     });
 
@@ -311,7 +311,7 @@ void Planner::set_refiner()
 {
   if (!FLG_REFINER) return;
   if (!FLG_MULTI_THREAD) return;
-  auto plan = backtrack(H_goal);
+  auto plan = backtrack(H_goal); // old solution
   info(2, verbose, deadline, "invoke refiners");
   for (auto k = 0; k < REFINER_NUM; ++k) {
     ++seed_refiner;
@@ -322,9 +322,9 @@ void Planner::set_refiner()
 
 Solution Planner::get_refined_plan(const Solution &plan)
 {
-  auto MT_internal = std::mt19937(seed_refiner);
+  auto MT_internal = std::mt19937(seed_refiner); // 每个refiner采用不同的seed
   if (depth < 1 && plan.size() > 3 &&
-      get_random_float(MT_internal) < RECURSIVE_RATE) {
+      get_random_float(MT_internal) < RECURSIVE_RATE) { // 0.2的概率递归调用LACAM进行refine
     // recursive LaCAM
     auto ins_tmp =
         Instance(ins->G, plan[get_random_int(MT_internal, 1, plan.size() - 2)],
