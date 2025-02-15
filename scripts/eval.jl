@@ -15,7 +15,7 @@ r = (x) -> round(x, digits = 3)
 function main(config_files...)
     # load experimental setting
     config = merge(map(YAML.load_file, config_files)...)
-    exec_file = get(config, "exec_file", joinpath(@__DIR__, "..", "build", "main"))
+    exec_file = get(config, "exec_file", joinpath(@__DIR__, "..", "cmake-build-debug", "main"))
     seed_start = get(config, "seed_start", 1)
     seed_end = get(config, "seed_end", seed_start)
     time_limit_sec = get(config, "time_limit_sec", 10)
