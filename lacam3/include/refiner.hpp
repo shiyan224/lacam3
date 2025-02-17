@@ -27,3 +27,7 @@
 Solution refine(const Instance *ins, const Deadline *deadline,
                 const Solution &solution, DistTable *D, const int seed = 0,
                 const int verbose = 0);
+
+Solution refineRR(const Instance *ins, const Deadline *deadline,
+                const Solution &solution, DistTable *D, const int seed = 0,
+                const int verbose = 0);
