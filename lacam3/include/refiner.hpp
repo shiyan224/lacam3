@@ -31,3 +31,5 @@ Solution refine(const Instance *ins, const Deadline *deadline,
 Solution refineRR(const Instance *ins, const Deadline *deadline,
                 const Solution &solution, DistTable *D, const int seed = 0,
                 const int verbose = 0);
+
+bool hostile(int i, int j, const Instance *ins);
