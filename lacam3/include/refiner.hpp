@@ -32,4 +32,13 @@ Solution refineRR(const Instance *ins, const Deadline *deadline,
                 const Solution &solution, DistTable *D, const int seed = 0,
                 const int verbose = 0);
 
-bool hostile(int i, int j, const Instance *ins);
+bool refineGroup(std::vector<int> &group, const Instance *ins, const Deadline *deadline,
+                 Paths &paths, Paths &new_paths, DistTable *D, const int seed, CollisionTable *CT);
+
+Solution refineRRGroup(const Instance *ins, const Deadline *deadline,
+                const Solution &solution, DistTable *D, const int seed = 0,
+                const int verbose = 0);
+
+int sign(const int x);
+
+bool hostile(const int i, const int j, const Instance *ins);
