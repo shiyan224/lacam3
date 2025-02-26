@@ -41,4 +41,6 @@ Solution refineRRGroup(const Instance *ins, const Deadline *deadline,
 
 int sign(const int x);
 
+int dis(const Vertex *u, const Vertex *v);
+
 bool hostile(const int i, const int j, const Instance *ins);

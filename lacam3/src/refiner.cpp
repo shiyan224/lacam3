@@ -1,5 +1,7 @@
 #include "../include/refiner.hpp"
 
+typedef std::pair<int,int> P;
+
 Solution refine(const Instance *ins, const Deadline *deadline,
                 const Solution &solution, DistTable *D, const int seed,
                 const int verbose)
@@ -246,13 +248,44 @@ int sign(const int x)
   if (x < 0)
     return -1;
 }
+int dis(const P u, const P v)
+{
+  return std::abs(u.first - v.first) + std::abs(u.second - v.second);
+}
 // 在粗化图上对agents分组，再进行refine
+void xflip(P &u, const int W, const int H)
+{
+  u.first = W - u.first - 1;
+}
+void yflip(P &u, const int W, const int H)
+{
+  u.second = H - u.second - 1;
+}
+void xyflip(P &u)
+{
+  std::swap(u.first, u.second);
+}
 bool hostile(const int i, const int j, const Instance *ins)
 {
-//  const auto N = ins->N;
-//  const auto si = ins->starts[i], sj = ins->starts[j], ei = ins->goals[i], ej = ins->goals[j];
-//  const auto xis = si->x, xie = ei->x, xjs = sj->x, xje=ej->x;
-//  const auto yis = si->y, yie = ei->y, yjs = sj->y, yje=ej->y;
+  const auto N = ins->N;
+  auto _si = ins->starts[i], _sj = ins->starts[j], _ei = ins->goals[i], _ej = ins->goals[j];
+  auto xis = _si->x, xie = _ei->x, xjs = _sj->x, xje= _ej->x;
+  auto yis = _si->y, yie = _ei->y, yjs = _sj->y, yje = _ej->y;
 
+  P si = std::make_pair(xis, yis), sj = std::make_pair(xjs, yjs);
+  P ei = std::make_pair(xie, yie), ej = std::make_pair(xje, yje);
+  auto W = ins->G->width, H = ins->G->height;
+
+  int bix = sign(xie-xis), biy = sign(yie - yis), bjx = sign(xje - xjs), bjy = sign(yje - yjs);
+  int Bi = std::abs(bix) + std::abs(biy), Bj = std::abs(bjx) + std::abs(bjy);
+  int B = Bi + Bj;
+
+  if (B == 2) {
+    // suppose that bix = 1, biy = 0
+    if (bix == 0)
+      xyflip()
+  }
+  else if (B == 3)
+    else if (B == 4)
   return true;
 }
