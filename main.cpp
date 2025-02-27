@@ -151,7 +151,7 @@ int main(int argc, char *argv[])
 //  print_stats(verbose, &deadline, ins, solution, comp_time_ms);
 
   DistTable *D = new DistTable(ins);
-  auto new_solution = refineRRGroup(&ins, &deadline, solution, D, seed, verbose - 4);
+  auto new_solution = refineRRGroup(&ins, &deadline, solution, D, seed, verbose - 4, 5);
   if (is_feasible_solution(ins, new_solution, verbose)) {
 //    std::cout << "new solution is feasible" << std::endl;
     std::cout << get_sum_of_loss(solution) << "->" << get_sum_of_loss(new_solution) << "\n";
@@ -161,5 +161,6 @@ int main(int argc, char *argv[])
   }
 //  print_stats(verbose, &deadline, ins, new_solution, comp_time_ms);
   make_log(ins, solution, new_solution, output_name, comp_time_ms, map_name, seed, log_short);
+  //test_hostile(&ins, 1);
   return 0;
 }
