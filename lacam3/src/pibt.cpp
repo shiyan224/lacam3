@@ -90,19 +90,7 @@ bool PIBT::funcPIBT(const int i, const Config &Q_from, Config &Q_to)
               if (v == prioritized_vertex) return true;
               if (u == prioritized_vertex) return false;
               int dv = D->get(i, v), du = D->get(i, u);
-              if (dv == du) {
-                auto av = occupied_now[v->id];
-                bool vgoal = false;
-                if (av != NO_AGENT && ins->goals[av] == v)
-                  vgoal = true;
-                auto au = occupied_now[u->id];
-                bool ugoal = false;
-                if (au != NO_AGENT && ins->goals[au] == u)
-                  ugoal = true;
-                if (vgoal || ugoal)
-                  return vgoal + tie_breakers[v->id] < ugoal + tie_breakers[u->id];
-              }
-              else return dv + tie_breakers[v->id] <
+              return dv + tie_breakers[v->id] <
                      du + tie_breakers[u->id];
             });
 

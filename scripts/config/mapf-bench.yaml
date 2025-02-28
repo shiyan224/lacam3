@@ -3,8 +3,8 @@ solver_name: "lacam-goalAvoid"
 solver_options:
   - "--no-all"
 num_min_agents: 150
-num_max_agents: 550
-num_interval_agents: 100
+num_max_agents: 250
+num_interval_agents: 50
 time_limit_sec: 5
 seeds: 1  # the number of iterations
 scen: scen-random
