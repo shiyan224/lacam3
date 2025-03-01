@@ -1,5 +1,5 @@
 # for MAPF benchmark
-solver_name: "lacam-refinerRR"
+solver_name: "lacam-refinerCompromiseNumber"
 solver_options:
   - "--no-all"
 num_min_agents: 150

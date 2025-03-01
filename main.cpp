@@ -134,8 +134,9 @@ int main(int argc, char *argv[])
       std::stof(program.get<std::string>("checkpoints-duration")) * 1000;
 
   // solve
+  auto CG = adjacency_table(N);
   const auto deadline = Deadline(time_limit_sec * 1000);
-  const auto solution = solve(ins, verbose - 1, &deadline, seed);
+  const auto solution = solve(ins, CG, verbose - 1, &deadline, seed);
   const auto comp_time_ms = deadline.elapsed_ms();
 
   // failure
@@ -151,7 +152,7 @@ int main(int argc, char *argv[])
 //  print_stats(verbose, &deadline, ins, solution, comp_time_ms);
 
   DistTable *D = new DistTable(ins);
-  auto new_solution = refineRRGroup(&ins, &deadline, solution, D, seed, verbose - 4, 5);
+  auto new_solution = refineCompromiseNumber(&ins, CG, &deadline, solution, D, seed, verbose - 4);
   if (is_feasible_solution(ins, new_solution, verbose)) {
 //    std::cout << "new solution is feasible" << std::endl;
     std::cout << get_sum_of_loss(solution) << "->" << get_sum_of_loss(new_solution) << "\n";

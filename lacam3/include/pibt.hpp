@@ -9,6 +9,7 @@
 #pragma once
 #include "dist_table.hpp"
 #include "graph.hpp"
+#include "adjacency_table.hpp"
 #include "instance.hpp"
 #include "scatter.hpp"
 #include "utils.hpp"
@@ -40,8 +41,8 @@ struct PIBT {
   ~PIBT();
 
   bool set_new_config(const Config &Q_from, Config &Q_to,
-                      const std::vector<int> &order);
-  bool funcPIBT(const int i, const Config &Q_from, Config &Q_to);
+                      const std::vector<int> &order, adjacency_table &tmp_CG);
+  bool funcPIBT(const int i, const Config &Q_from, Config &Q_to, adjacency_table &tmp_CG);
   int is_swap_required_and_possible(const int ai, const Config &Q_from,
                                     Config &Q_to);
   bool is_swap_required(const int pusher, const int puller,

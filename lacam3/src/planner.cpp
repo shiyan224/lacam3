@@ -58,7 +58,7 @@ Planner::~Planner()
   if (delete_dist_table_after_used) delete D;
 }
 
-Solution Planner::solve()
+Solution Planner::solve(adjacency_table &CG)
 {
   info(1, verbose, deadline, "start search");
   update_checkpoints();
@@ -122,10 +122,11 @@ Solution Planner::solve()
 
     // create successors at the high-level search
     auto Q_to = Config(N, nullptr);
-    auto res = set_new_config(H, L, Q_to);
+    auto tmp_CG = adjacency_table(N);
+    auto res = set_new_config(H, L, Q_to, tmp_CG);
     delete L;
     if (!res) continue;
-
+    CG.merge(tmp_CG);
     // check explored list
     auto iter = EXPLORED.find(Q_to);
     if (iter != EXPLORED.end()) {
@@ -205,7 +206,7 @@ Solution Planner::backtrack(HNode *H)
   return plan;
 }
 
-bool Planner::set_new_config(HNode *H, LNode *L, Config &Q_to)
+bool Planner::set_new_config(HNode *H, LNode *L, Config &Q_to, adjacency_table &tmp_CG)
 {
   // worker-id, time -> configuration
   auto Q_cands = std::vector<Config>(PIBT_NUM, Config(N, nullptr));
@@ -216,7 +217,7 @@ bool Planner::set_new_config(HNode *H, LNode *L, Config &Q_to)
     // set constraints
     for (auto d = 0; d < L->depth; ++d) Q_cands[k][L->who[d]] = L->where[d];
     // PIBT
-    auto res = pibts[k]->set_new_config(H->C, Q_cands[k], H->order);
+    auto res = pibts[k]->set_new_config(H->C, Q_cands[k], H->order, tmp_CG);
     if (res)
       f_vals[k] = get_edge_cost(H->C, Q_cands[k]) + heuristic->get(Q_cands[k]);
   };
@@ -337,7 +338,8 @@ Solution Planner::get_refined_plan(const Solution &plan)
         Planner(&ins_tmp, 0, &deadline_tmp, seed_refiner, depth + 1, D);
     info(4, verbose, deadline, "refiner-", planner_tmp.seed,
          "\tactivated (recursive LaCAM)");
-    auto res = planner_tmp.solve();
+   // auto res = planner_tmp.solve();
+    auto res = plan; // 用不到，暂时这么写一下以通过编译
     info(4, verbose, deadline, "refiner-", planner_tmp.seed,
          "\tcompleted (recursive LaCAM)");
     return res;

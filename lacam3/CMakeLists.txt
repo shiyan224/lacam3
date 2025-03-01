@@ -2,7 +2,9 @@ cmake_minimum_required(VERSION 3.16)
 file(GLOB SRCS "./src/*.cpp")
 project(lacam3)
 add_library(${PROJECT_NAME} STATIC ${SRCS}
-        include/refiner.hpp)
+        include/refiner.hpp
+        src/adjacency_table.cpp
+        include/adjacency_table.hpp)
 target_compile_options(${PROJECT_NAME} PUBLIC -O3 -Wall)
 target_compile_features(${PROJECT_NAME} PUBLIC cxx_std_17)
 target_include_directories(${PROJECT_NAME} INTERFACE ./include)

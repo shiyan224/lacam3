@@ -20,7 +20,7 @@ PIBT::PIBT(const Instance *_ins, DistTable *_D, int seed, bool _flg_swap,
 PIBT::~PIBT() {}
 
 bool PIBT::set_new_config(const Config &Q_from, Config &Q_to,
-                          const std::vector<int> &order)
+                          const std::vector<int> &order, adjacency_table &tmp_CG)
 {
   bool success = true;
   // setup cache & constraints check
@@ -47,7 +47,7 @@ bool PIBT::set_new_config(const Config &Q_from, Config &Q_to,
 
   if (success) {
     for (auto i : order) {
-      if (Q_to[i] == nullptr && !funcPIBT(i, Q_from, Q_to)) {
+      if (Q_to[i] == nullptr && !funcPIBT(i, Q_from, Q_to, tmp_CG)) {
         success = false;
         break;
       }
@@ -63,7 +63,7 @@ bool PIBT::set_new_config(const Config &Q_from, Config &Q_to,
   return success;
 }
 
-bool PIBT::funcPIBT(const int i, const Config &Q_from, Config &Q_to)
+bool PIBT::funcPIBT(const int i, const Config &Q_from, Config &Q_to, adjacency_table &tmp_CG)
 {
   const auto K = Q_from[i]->neighbor.size();
 
@@ -115,16 +115,26 @@ bool PIBT::funcPIBT(const int i, const Config &Q_from, Config &Q_to)
   };
 
   // main loop
+  std::vector<int> cid;
+  std::vector<int> cdis;
   for (size_t k = 0; k < K + 1; ++k) {
     auto u = C_next[i][k];
-
     // avoid vertex conflicts
-    if (occupied_next[u->id] != NO_AGENT) continue;
+    if (occupied_next[u->id] != NO_AGENT) {
+      cid.push_back(occupied_next[u->id]);
+      cdis.push_back(D->get(i, u));
+      continue;
+    }
 
     const auto j = occupied_now[u->id];
 
     // avoid swap conflicts with constraints
-    if (j != NO_AGENT && Q_to[j] == Q_from[i]) continue;
+    auto du = D->get(i, u);
+    if (j != NO_AGENT && Q_to[j] == Q_from[i]) {
+      cid.push_back(occupied_next[u->id]);
+      cdis.push_back(du);
+      continue;
+    }
 
     // reserve next location
     occupied_next[u->id] = i;
@@ -132,8 +142,15 @@ bool PIBT::funcPIBT(const int i, const Config &Q_from, Config &Q_to)
 
     // priority inheritance
     if (j != NO_AGENT && u != Q_from[i] && Q_to[j] == nullptr &&
-        !funcPIBT(j, Q_from, Q_to))
+        !funcPIBT(j, Q_from, Q_to, tmp_CG))
       continue;
+
+    // 赋边权
+    for (int _i = 0; _i < cid.size(); _i++) {
+      auto id = cid[_i];
+      tmp_CG.table[i][id] += std::max(du - cdis[_i], 0);
+      tmp_CG.table[id][i] += std::max(du - cdis[_i], 0);
+    }
 
     // success to plan next one step
     if (flg_swap && k == 0) swap_operation();

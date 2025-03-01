@@ -25,6 +25,7 @@
 #include "refiner.hpp"
 #include "scatter.hpp"
 #include "translator.hpp"
+#include "adjacency_table.hpp"
 #include "utils.hpp"
 
 struct Planner {
@@ -93,8 +94,8 @@ struct Planner {
           DistTable *_D = nullptr  // used in recursive LaCAM
   );
   ~Planner();
-  Solution solve();
-  bool set_new_config(HNode *S, LNode *M, Config &Q_to);
+  Solution solve(adjacency_table &CG);
+  bool set_new_config(HNode *S, LNode *M, Config &Q_to, adjacency_table &tmp_CG);
   HNode *create_highlevel_node(const Config &Q, HNode *parent);
   void rewrite(HNode *H_from, HNode *H_to);
   int get_edge_cost(const Config &C1, const Config &C2);
