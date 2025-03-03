@@ -128,9 +128,47 @@ Solution refineCompromiseNumber(const Instance *ins, adjacency_table &CG, const 
   const auto num_refine_agents =
       std::max(1, std::min(get_random_int(MT, 1, 30), int(N / 4))); // 一组agents的个数
 
-  // 匹配怎么写
+  // 匹配：贪心一下
+  auto table = CG.table;
+  using Edge = std::tuple<int, int, int>;
+  std::vector<Edge> edge;
+  for (int i = 0; i < N; i++) {
+    for (auto e:table[i]) { // (i, e.first, e.second)
+      edge.emplace_back(Edge(i, e.first, e.second));
+//      std::cout << i << ' ' << e.first << ' ' << e.second << '\n';
+    }
+  }
 
+  // 按边权降序排列
+  std::sort(edge.begin(), edge.end(), [&](Edge &u, Edge &v){
+    return std::get<2>(u) > std::get<2>(v);
+  });
+  std::vector<bool> matched(N, false);
+  Paths new_paths(N);
+  for (auto &e:edge) {
+    auto i = std::get<0>(e), j = std::get<1>(e);
+    if (!matched[i] && !matched[j]) {
+      std::vector<int> group = {i, j};
+      if (refineGroup(group, ins, deadline, paths, new_paths, D, seed, &CT)) {
+        matched[i] = matched[j] = true;
+      }
+    }
+  }
 
+  // 剩下的随机
+  std::vector<int> group;
+  for (int _i = 0; _i < N; _i++) {
+    auto i = order[_i];
+    if (!matched[i])
+      group.emplace_back(i);
+    if (_i == N - 1 || group.size() == num_refine_agents) {
+      if (refineGroup(group, ins, deadline, paths, new_paths, D, seed, &CT)) {
+        for (auto j : group)
+          matched[j] = true;
+      }
+      group.clear();
+    }
+  }
   return translatePathsToConfigs(paths);
 }
 

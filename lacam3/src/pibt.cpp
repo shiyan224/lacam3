@@ -131,8 +131,7 @@ bool PIBT::funcPIBT(const int i, const Config &Q_from, Config &Q_to, adjacency_t
     // avoid swap conflicts with constraints
     auto du = D->get(i, u);
     if (j != NO_AGENT && Q_to[j] == Q_from[i]) {
-      cid.push_back(occupied_next[u->id]);
-      cdis.push_back(du);
+      cid.push_back(j); cdis.push_back(du);
       continue;
     }
 
@@ -148,8 +147,10 @@ bool PIBT::funcPIBT(const int i, const Config &Q_from, Config &Q_to, adjacency_t
     // 赋边权
     for (int _i = 0; _i < cid.size(); _i++) {
       auto id = cid[_i];
-      tmp_CG.table[i][id] += std::max(du - cdis[_i], 0);
-      tmp_CG.table[id][i] += std::max(du - cdis[_i], 0);
+      if (du - cdis[_i] > 0) {
+        tmp_CG.table[i][id] += du - cdis[_i];
+        tmp_CG.table[id][i] += du - cdis[_i];
+      }
     }
 
     // success to plan next one step
