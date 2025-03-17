@@ -26,6 +26,8 @@ struct HNode {
   int f;
 
   // for low-level search
+  std::vector<int> corridorPriorities;
+  std::vector<float> movingPriorities;
   std::vector<float> priorities;
   std::vector<int> order;
   std::queue<LNode *> search_tree;

@@ -11,6 +11,8 @@ HNode::HNode(Config _C, DistTable *D, HNode *_parent, int _g, int _h)
       g(_g),
       h(_h),
       f(g + h),
+      corridorPriorities(C.size(), 0),
+      movingPriorities(C.size(), 0),
       priorities(C.size(), 0),
       order(C.size(), 0),
       search_tree(std::queue<LNode *>())
@@ -34,10 +36,34 @@ HNode::HNode(Config _C, DistTable *D, HNode *_parent, int _g, int _h)
     // dynamic priorities, akin to PIBT
     for (auto i = 0; i < N; ++i) {
       if (D->get(i, C[i]) != 0) {
-        priorities[i] = parent->priorities[i] + 1;
+        movingPriorities[i] = parent->movingPriorities[i] + 1;
       } else {
-        priorities[i] = parent->priorities[i] - (int)parent->priorities[i];
+        movingPriorities[i] = parent->movingPriorities[i] - (int)parent->movingPriorities[i];
       }
+      if (C[i]->neighbor.size() == 2) { // 在走廊里
+        if (D->get(i, C[i]) >= D->get(i, parent->C[i])) { // 逆向进入走廊
+          if (parent->corridorPriorities[i])
+            corridorPriorities[i] = parent->corridorPriorities[i] - 1;
+          else {
+            int len = 0;
+            Vertex* pre = parent -> C[i];
+            Vertex* cur = C[i];
+            while (cur -> neighbor.size() == 2) {
+              len++;
+              for (auto v:cur->neighbor)
+                if (v != pre) {
+                  pre = cur;
+                  cur = v;
+                }
+            }
+          }
+        }
+        else { // 正向进入走廊
+          corridorPriorities[i] = parent->corridorPriorities[i] + 1;
+        }
+      }
+      else corridorPriorities[i] = 0;
+      priorities[i] = (float)corridorPriorities[i] + movingPriorities[i];
     }
   }
 
