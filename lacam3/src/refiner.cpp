@@ -20,7 +20,7 @@ Solution refine(const Instance *ins, const Deadline *deadline,
   std::shuffle(order.begin(), order.end(), MT);
 
   const auto num_refine_agents =
-      std::max(1, std::min(get_random_int(MT, 1, 30), int(N / 4))); // 一组agents的个数
+      std::max(1, std::min(get_random_int(MT, 1, 10), int(N / 4))); // 一组agents的个数
 //  std::cout << "num_refine_agents:\t" << num_refine_agents << std::endl;
   info(1, verbose, deadline, "refiner-", seed,
        "\tsize of modif set: ", num_refine_agents);
@@ -202,7 +202,7 @@ Solution refineRRGroup(const Instance *ins, const Deadline *deadline,
   std::shuffle(order.begin(), order.end(), MT);
   std::vector<bool> updated(N, false);
   const auto num_refine_agents =
-      std::max(1, std::min(get_random_int(MT, 1, 30), int(N / 4))); // 一组agents的个数
+      std::max(1, std::min(get_random_int(MT, 1, 10), int(N / 4))); // 一组agents的个数
                                                                      //  std::cout << "num_refine_agents:\t" << num_refine_agents << std::endl;
   info(1, verbose, deadline, "refinerRRGroup-", seed,
        "\tsize of modif set: ", num_refine_agents);
