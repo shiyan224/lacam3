@@ -155,7 +155,7 @@ int main(int argc, char *argv[])
   auto new_solution = refine(&ins, &deadline, solution, D, seed, verbose - 4);
   if (is_feasible_solution(ins, new_solution, verbose)) {
 //    std::cout << "new solution is feasible" << std::endl;
-    std::cout << get_sum_of_loss(solution) << "->" << get_sum_of_loss(new_solution) << "\n";
+//    std::cout << get_sum_of_loss(solution) << "->" << get_sum_of_loss(new_solution) << "\n";
   }
   else {
     std::cout << "invalid new solution" << '\n';
