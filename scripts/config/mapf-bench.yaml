@@ -2,21 +2,21 @@
 solver_name: "lacam-refinerRandom"
 solver_options:
   - "--no-all"
-num_min_agents: 150
-num_max_agents: 250
-num_interval_agents: 50
+num_min_agents: 200
+num_max_agents: 600
+num_interval_agents: 200
 time_limit_sec: 5
 seeds: 1  # the number of iterations
 scen: scen-random
 maps:
-  # - Berlin_1_256
+   - Berlin_1_256
   # - Boston_0_256
   # - brc202d
   # - Paris_1_256
   # - den312d
   # - den520d
-  # - empty-16-16
-  # - empty-32-32
+   - empty-16-16
+#   - empty-32-32
   # - empty-48-48
   # - empty-8-8
   # - ht_chantry
@@ -31,10 +31,10 @@ maps:
   # - orz900d
   # - ost003d
   # - random-32-32-10
-  - random-32-32-20
+   - random-32-32-20
   # - random-64-64-10
   # - random-64-64-20
-  # - room-32-32-4
+   - room-32-32-4
   # - room-64-64-16
   # - room-64-64-8
   # - w_woundedcoast
