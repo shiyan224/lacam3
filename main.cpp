@@ -105,7 +105,8 @@ int main(int argc, char *argv[])
 
   // solver parameters
   const auto flg_no_all = program.get<bool>("no-all");
-  Planner::FLG_SWAP = !program.get<bool>("no-swap") && !flg_no_all;
+  // Planner::FLG_SWAP = !program.get<bool>("no-swap") && !flg_no_all;
+  Planner::FLG_SWAP = true;
   Planner::FLG_STAR = !program.get<bool>("no-star") && !flg_no_all;
   Planner::FLG_MULTI_THREAD =
       !program.get<bool>("no-multi-thread") && !flg_no_all;
