@@ -3,7 +3,7 @@ solver_name: "naive-lacam"
 solver_options:
   - "--no-all"
 num_min_agents: 200
-num_max_agents: 1000
+num_max_agents: 800
 num_interval_agents: 200
 time_limit_sec: 5
 seeds: 1  # the number of iterations
