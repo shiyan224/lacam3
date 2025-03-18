@@ -308,8 +308,8 @@ bool hostile(const int i, const int j, int W, int H, Vertex *_si, Vertex *_ei, V
   int B = Bi + Bj;
   W /= f; H /= f;
 
-  if (si == sj && ei == ej)
-    return true;
+//  if (si == sj && ei == ej)
+//    return true;
 
   // 活动区域的边界
   int Dix1 = std::min(xis, xie), Dix2 = std::max(xis, xie);
