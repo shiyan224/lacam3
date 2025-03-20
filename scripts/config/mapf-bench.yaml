@@ -2,8 +2,8 @@
 solver_name: "lacam-refinerRR"
 solver_options:
   - "--no-all"
-num_min_agents: 200
-num_max_agents: 600
+num_min_agents: 50
+num_max_agents: 450
 num_interval_agents: 200
 time_limit_sec: 5
 seeds: 1  # the number of iterations
@@ -15,8 +15,8 @@ maps:
   # - Paris_1_256
   # - den312d
   # - den520d
-   - empty-16-16
-  # - empty-32-32
+#   - empty-16-16
+   - empty-32-32
   # - empty-48-48
   # - empty-8-8
   # - ht_chantry
