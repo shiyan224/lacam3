@@ -152,14 +152,15 @@ int main(int argc, char *argv[])
 //  print_stats(verbose, &deadline, ins, solution, comp_time_ms);
 
   DistTable *D = new DistTable(ins);
-  auto new_solution = refine(&ins, &deadline, solution, D, seed, verbose - 4);
-  if (is_feasible_solution(ins, new_solution, verbose)) {
-//    std::cout << "new solution is feasible" << std::endl;
-//    std::cout << get_sum_of_loss(solution) << "->" << get_sum_of_loss(new_solution) << "\n";
+  auto new_solution = solution;
+  for (int i = 0; i < 5; i++) {
+    new_solution = refine(&ins, &deadline, new_solution, D, seed, verbose - 4);
+    if (!is_feasible_solution(ins, new_solution, verbose))
+      break;
+      //    std::cout << "new solution is feasible" << std::endl;
+      //    std::cout << get_sum_of_loss(solution) << "->" << get_sum_of_loss(new_solution) << "\n"
   }
-  else {
-    std::cout << "invalid new solution" << '\n';
-  }
+
 //  print_stats(verbose, &deadline, ins, new_solution, comp_time_ms);
   make_log(ins, solution, new_solution, output_name, comp_time_ms, map_name, seed, log_short);
   //test_hostile(&ins, 1);
