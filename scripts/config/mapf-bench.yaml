@@ -9,7 +9,7 @@ time_limit_sec: 5
 seeds: 1  # the number of iterations
 scen: scen-random
 maps:
-   - Berlin_1_256
+#   - Berlin_1_256
   # - Boston_0_256
   # - brc202d
   # - Paris_1_256
